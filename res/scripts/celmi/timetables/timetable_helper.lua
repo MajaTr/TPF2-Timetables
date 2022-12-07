@@ -97,6 +97,7 @@ function timetableHelper.startVehicle(vehicle)
     if not(type(vehicle) == "number") then print("Expected String or Number") return false end
 
     api.cmd.sendCommand(api.cmd.make.setUserStopped(vehicle,false))
+    api.cmd.sendCommand(api.cmd.make.setVehicleManualDeparture(vehicle,false))
     return nil
 end
 
@@ -106,7 +107,7 @@ function timetableHelper.stopVehicle(vehicle)
     if type(vehicle) == "string" then vehicle = tonumber(vehicle) end
     if not(type(vehicle) == "number") then print("Expected String or Number") return false end
 
-    api.cmd.sendCommand(api.cmd.make.setUserStopped(vehicle,true))
+    api.cmd.sendCommand(api.cmd.make.setVehicleManualDeparture(vehicle,true))
 
     return nil
 end
