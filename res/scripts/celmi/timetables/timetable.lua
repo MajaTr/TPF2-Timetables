@@ -170,6 +170,28 @@ function timetable.updateArrDep(line, station, indexKey, indexValue, value)
     end
 end
 
+function timetable.clonePeriodically(line, station, period)
+    if not (line and station) then return -1 end 
+    local timetable_line = timetableObject[tostring(line)] 
+    if not timetable_line then return -1 end 
+    local timetable_station = timetable_line.stations[station]
+    if not (timetable_station and timetable_station.conditions) then return -1 end 
+    local arrdep = timetable_station.conditions.ArrDep 
+    if not arrdep then return -1 end 
+    for k,d in ipairs(arrdep) do 
+        if d[3] >= period then 
+            arrdep[k] = nil 
+        end 
+    end 
+    for k,d in ipairs(arrdep) do 
+        if d[3] + period < 60 then
+            table.insert(arrdep, { (d[1]+period) % 60, d[2], d[3]+period, d[4]}) 
+        end 
+    end 
+    return 0
+end 
+
+
 function timetable.updateDebounce(line, station, indexKey, value)
     if not (line and station and indexKey and value) then return -1 end
     if timetableObject[tostring(line)] and

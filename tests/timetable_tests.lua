@@ -100,6 +100,39 @@ timetableTests[#timetableTests + 1] = function()
     assert(x == 52*60 + 30, "time to closest constraint should be 55 min instead of ".. x)
 end
 
+timetableTests[#timetableTests + 1] = function()
+    timetable.setTimetableObject({
+        ["Line 1"] = { 
+            stations = { 
+                ["Station 1"] = {
+                     conditions = {
+                         ArrDep = {
+                            {59, 30, 1, 0}
+                        }
+                    }
+                }
+            }
+        }
+    })
+
+    timetable.clonePeriodically("Line 1", "Station 1", 10)
+    local x = timetable.getTimetableObject()["Line 1"].stations["Station 1"].conditions.ArrDep
+ 
+    assert(table.concat(x[1], " ")  == "59 30 1 0", "failure to clone with period 10, got " .. table.concat(x[1], " ") )
+    assert(table.concat(x[2], " ")  == "9 30 11 0", "failure to clone with period 10, got " .. table.concat(x[2], " ") )
+    assert(table.concat(x[6], " ")  == "49 30 51 0", "failure to clone with period 10, got " .. table.concat(x[6], " ") )
+    assert(#x == 6, "failure to clone with period 10, got table of length " .. #x )
+
+    timetable.clonePeriodically("Line 1", "Station 1", 15)
+    local x = timetable.getTimetableObject()["Line 1"].stations["Station 1"].conditions.ArrDep
+    assert(table.concat(x[1], " ")  == "59 30 1 0", "failure to clone with period 15, got " .. table.concat(x[1], " ") )
+    assert(table.concat(x[2], " ")  == "9 30 11 0", "failure to clone with period 15, got " .. table.concat(x[2], " ") )
+    assert(table.concat(x[3], " ")  == "14 30 16 0", "failure to clone with period 15, got " .. table.concat(x[3], " ") )
+    assert(table.concat(x[4], " ")  == "24 30 26 0", "failure to clone with period 15, got " .. table.concat(x[4], " ") )
+    assert(table.concat(x[8], " ")  == "54 30 56 0", "failure to clone with period 15, got " .. table.concat(x[8], " ") )
+    assert(#x == 8, "failure to clone with period 15, got table of length " .. #x )
+end 
+
 return {
     test = function()
         for k,v in pairs(timetableTests) do
