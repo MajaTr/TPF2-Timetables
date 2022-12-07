@@ -50,6 +50,8 @@ local UIStrings = {
 		tooltip	= _("tooltip_i18n")
 }
 
+local periods = {60, 30, 20, 15, 12, 10, 6, 5, 4}
+
 -------------------------------------------------------------
 ---------------------- stationTab ---------------------------
 -------------------------------------------------------------
@@ -630,13 +632,40 @@ function timetableGUI.makeArrDepWindow(lineID, stationID)
         end
     end)
 
+    -- setup "every X min"
+    local periodBox = api.gui.comp.ComboBox.new()
+    for _,v in pairs(periods) do 
+        periodBox:addItem(v .. " min")
+    end 
+    periodBox:setGravity(1,0)
+    periodBox:onIndexChanged(function (i)
+        if i == -1 then return end
+        timetable.clonePeriodically(lineID, stationID, periods[i+1])
+        timetableChanged = true
+        clearConstraintWindowLaterHACK = function()
+            timetableGUI.initStationTable()
+            timetableGUI.fillStationTable(UIState.currentlySelectedLineTableIndex, false)
+            timetableGUI.clearConstraintWindow()
+            timetableGUI.makeArrDepWindow(lineID, stationID)
+        end
+    end)
+
     --setup header
     local headerTable = api.gui.comp.Table.new(4, 'NONE')
     headerTable:setColWidth(0,125)
     headerTable:setColWidth(1,76)
     headerTable:setColWidth(2,50)
     headerTable:setColWidth(3,48)
-    headerTable:addRow({api.gui.comp.TextView.new(""),api.gui.comp.TextView.new(UIStrings.min),api.gui.comp.TextView.new(UIStrings.sec),addButton})
+    headerTable:addRow({
+        periodBox,
+        api.gui.comp.TextView.new(""),
+        api.gui.comp.TextView.new(""),
+        api.gui.comp.TextView.new("")})
+    headerTable:addRow({
+        api.gui.comp.TextView.new(""),
+        api.gui.comp.TextView.new(UIStrings.min),
+        api.gui.comp.TextView.new(UIStrings.sec),
+        addButton})
     menu.constraintTable:addRow({headerTable})
 
 
