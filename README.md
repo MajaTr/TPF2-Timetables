@@ -1,5 +1,7 @@
 [![CI](https://github.com/MajaTr/TPF2-Timetables/actions/workflows/blank.yml/badge.svg)](https://github.com/IncredibleHannes/TPF2-Timetables/actions/workflows/blank.yml)
 # TPF2-Timetables
+This is my own fork of the repository, since I've decided that it'd probably be much faster to fix by myself everything I want to have fixed. The original text is below. 
+
 ## Project setup
 The project is split into 3 parts, represented by 3 different script files.
 ### Timetable Logic
