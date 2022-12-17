@@ -2,6 +2,7 @@ local timetable = require "celmi/timetables/timetable"
 local timetableHelper = require "celmi/timetables/timetable_helper"
 
 local gui = require "gui"
+local api = require "api"
 
 local clockstate = nil
 
