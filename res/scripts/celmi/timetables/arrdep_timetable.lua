@@ -70,23 +70,25 @@ end
 -- @return int? 
 function ArrDepTimetable:getDepartureTime(t)
     assert(t)
-    local t = t % self.period 
-    local res = {score = nil, value = nil}
-    
+    local t_mod = t % self.period 
+    local res = {score = nil, delta = nil}
+
     for _, arrdep in pairs(self.arrdeps) do
         local arr = arrdep.arr and arrdep.arr or arrdep.dep
         local dep = arrdep.dep 
-        local pos = self:positionInInterval(t, arr, dep)
+        local pos = self:positionInInterval(t_mod, arr, dep)
         local k, v = next(pos)
         if k == "inside" then 
-            return dep 
+            res.delta = self:timeDiff(dep, t_mod)
+            break
         elseif (res.score == nil) or (v < res.score) then 
             res.score = v
-            res.value = dep
+            res.delta = (k == "before") and self:timeDiff(dep, t_mod) or -self:timeDiff(t_mod, dep)
         end
     end
 
-    return res.value
+
+    return res.delta and t + res.delta or nil
 end
 
 function ArrDepTimetable:fromOld(old_arrdeps)
